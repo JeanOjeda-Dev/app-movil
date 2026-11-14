@@ -99,3 +99,4 @@ const styles = StyleSheet.create({
   subtitulo: { fontSize: 16, fontWeight: "bold", color: "#1e293b", marginBottom: 8 },
   parrafo: { fontSize: 14, color: "#475569", lineHeight: 20 },
 });
+// Fix menor en estructura de vistas
