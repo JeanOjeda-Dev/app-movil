@@ -24,3 +24,4 @@ export default function Experiencia() {
 const styles = StyleSheet.create({
   contenedor: { flex: 1, backgroundColor: "#f8fafc", padding: 16 },
 });
+// Fix de validacion de URLs
