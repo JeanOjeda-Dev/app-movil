@@ -68,3 +68,4 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 });
+// Ajuste de visualizacion responsive
