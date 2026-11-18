@@ -1,102 +1,237 @@
-import React from "react";
-import { Alert, Image, Linking, ScrollView, StyleSheet, Text, View } from "react-native";
-import MiBoton from "../components/MiBoton";
+// src/app/index.tsx
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Image,
+  Pressable,
+  Linking,
+  LayoutAnimation,
+  Platform,
+  UIManager,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function Inicio() {
-  const abrirEnlace = async (url: string) => {
-    const soportado = await Linking.canOpenURL(url);
-    if (soportado) {
-      await Linking.openURL(url);
-    } else {
-      Alert.alert("Error", "No se pudo abrir el enlace: " + url);
-    }
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+export default function HomeScreen() {
+  const [mostrarObjetivo, setMostrarObjetivo] = useState(true);
+
+  const toggleObjetivo = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setMostrarObjetivo(!mostrarObjetivo);
   };
 
   return (
-    <ScrollView style={styles.contenedor} contentContainerStyle={styles.contenido}>
-      <View style={styles.avatarContenedor}>
-        {/* Recuerda tener tu foto guardada en assets/images/perfil.jpg */}
+    <ScrollView contentContainerStyle={styles.container}>
+      {/* Tarjeta Superior de Identidad */}
+      <View style={styles.profileCard}>
         <Image
-          source={require("../../assets/images/perfil.jpg")}
-          style={styles.fotoPerfil}
+          source={require('../../assets/images/perfil.jpg')} // Verifica el nombre exacto de tu imagen en assets
+          style={styles.avatar}
         />
-        <Text style={styles.nombre}>Jean Ojeda Rangel</Text>
-        <Text style={styles.profesion}>Tecnólogo en ADSO - SENA</Text>
+        <Text style={styles.name}>Jean Ojeda Rangel</Text>
+        <Text style={styles.subtitle}>Tecnólogo en ADSO - SENA</Text>
+        <View style={styles.divider} />
+        <Text style={styles.ficha}>Ficha 3407187 • Bogotá D.C.</Text>
       </View>
 
-      <View style={styles.seccion}>
-        <Text style={styles.subtitulo}>Perfil Profesional</Text>
-        <Text style={styles.parrafo}>
-          Aprendiz del SENA en Análisis y Desarrollo de Software (Ficha 3407187) en Bogotá D.C.,
-          enfocado en desarrollo Backend, bases de datos PostgreSQL y construcción de aplicaciones
-          móviles con React Native.
-        </Text>
+      {/* Ficha de Datos Personales y Técnicos */}
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>Información General</Text>
+
+        <View style={styles.row}>
+          <View style={styles.col}>
+            <Text style={styles.label}>Especialidad</Text>
+            <Text style={styles.value}>Desarrollo Backend</Text>
+          </View>
+          <View style={styles.col}>
+            <Text style={styles.label}>Base de Datos</Text>
+            <Text style={styles.value}>PostgreSQL</Text>
+          </View>
+        </View>
+
+        <View style={styles.row}>
+          <View style={styles.col}>
+            <Text style={styles.label}>Desarrollo Móvil</Text>
+            <Text style={styles.value}>React Native</Text>
+          </View>
+          <View style={styles.col}>
+            <Text style={styles.label}>Disponibilidad</Text>
+            <Text style={styles.value}>Inmediata / Etapa Productiva</Text>
+          </View>
+        </View>
       </View>
 
-      <View style={styles.seccion}>
-        <Text style={styles.subtitulo}>Contacto y Perfiles</Text>
-        <MiBoton
-          textoBoton="Enviar Correo"
-          nombreIcono="mail"
-          colorBoton="#E8D464"
-          onPress={() => Alert.alert("Correo Electrónico", "jeanopjeda2504@gmail.com")}
-        />
-        <MiBoton
-          textoBoton="Llamar"
-          nombreIcono="call"
-          colorBoton="#60a5fa"
-          onPress={() => Alert.alert("Teléfono", "Llamando a Jean Ojeda (+57) - Bogotá D.C.")}
-        />
-        <MiBoton
-          textoBoton="LinkedIn"
-          nombreIcono="logo-linkedin"
-          colorBoton="#0a66c2"
-          onPress={() => abrirEnlace("https://www.linkedin.com/feed/")}
-        />
-        <MiBoton
-          textoBoton="GitHub (Repositorio App)"
-          nombreIcono="logo-github"
-          colorBoton="#94a3b8"
-          onPress={() => abrirEnlace("https://github.com/JeanOjeda-Dev/app-movil")}
-        />
-        <MiBoton
-          textoBoton="Mi Hobby"
-          nombreIcono="film-outline"
-          colorBoton="#f472b6"
-          onPress={() =>
-            Alert.alert(
-              "Mi Hobby Favorito",
-              "Me encanta ver las películas de Spider-Man mientras disfruto de una deliciosa porción de lasaña."
-            )
-          }
-        />
+      {/* Sección Interactiva Desplegable: Qué busco en una empresa */}
+      <Pressable style={styles.card} onPress={toggleObjetivo}>
+        <View style={styles.accordionHeader}>
+          <Text style={styles.sectionTitle}>Qué busco en una empresa</Text>
+          <Ionicons
+            name={mostrarObjetivo ? 'chevron-up' : 'chevron-down'}
+            size={20}
+            color="#1e3a8a"
+          />
+        </View>
+        {mostrarObjetivo && (
+          <Text style={styles.textBody}>
+            Busco integrarme a un equipo de desarrollo dinámico donde pueda aportar mis conocimientos en arquitectura backend, gestión de bases de datos PostgreSQL y análisis de información, mientras continúo creciendo profesionalmente en proyectos tecnológicos reales.
+          </Text>
+        )}
+      </Pressable>
+
+      {/* Botones de Contacto Directo con Íconos Vectoriales */}
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>Contacto Directo</Text>
+
+        <Pressable
+          style={({ pressed }) => [
+            styles.actionButton,
+            styles.btnPrimary,
+            pressed && styles.btnPressed,
+          ]}
+          onPress={() => Linking.openURL('mailto:jeanojeda2504@gmail.com')}
+        >
+          <Ionicons name="mail-outline" size={20} color="#fff" />
+          <Text style={styles.btnText}>Enviar Correo Electrónico</Text>
+        </Pressable>
+
+        <Pressable
+          style={({ pressed }) => [
+            styles.actionButton,
+            styles.btnDark,
+            pressed && styles.btnPressed,
+          ]}
+          onPress={() => Linking.openURL('https://github.com/JeanOjeda-Dev/app-movil')}
+        >
+          <Ionicons name="logo-github" size={20} color="#fff" />
+          <Text style={styles.btnText}>Repositorio en GitHub</Text>
+        </Pressable>
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  contenedor: { flex: 1, backgroundColor: "#f8fafc" },
-  contenido: { padding: 20 },
-  avatarContenedor: { alignItems: "center", marginBottom: 20 },
-  fotoPerfil: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 3,
-    borderColor: "#2563eb",
-    marginBottom: 8,
-  },
-  nombre: { fontSize: 24, fontWeight: "bold", color: "#0f172a", marginTop: 4 },
-  profesion: { fontSize: 16, color: "#2563eb", fontWeight: "600" },
-  seccion: {
-    backgroundColor: "#fff",
+  container: {
     padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-    elevation: 1,
+    backgroundColor: '#f1f5f9',
   },
-  subtitulo: { fontSize: 16, fontWeight: "bold", color: "#1e293b", marginBottom: 8 },
-  parrafo: { fontSize: 14, color: "#475569", lineHeight: 20 },
+  profileCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    alignItems: 'center',
+    marginBottom: 14,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  avatar: {
+    width: 105,
+    height: 105,
+    borderRadius: 52.5,
+    borderWidth: 3,
+    borderColor: '#1e3a8a',
+    marginBottom: 12,
+  },
+  name: {
+    fontSize: 21,
+    fontWeight: 'bold',
+    color: '#0f172a',
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#1e3a8a',
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#e2e8f0',
+    width: '80%',
+    marginVertical: 10,
+  },
+  ficha: {
+    fontSize: 13,
+    color: '#64748b',
+    fontWeight: '500',
+  },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 14,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#0f172a',
+    marginBottom: 10,
+  },
+  accordionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  col: {
+    flex: 1,
+  },
+  label: {
+    fontSize: 12,
+    color: '#64748b',
+    fontWeight: '600',
+  },
+  value: {
+    fontSize: 14,
+    color: '#1e293b',
+    fontWeight: '500',
+    marginTop: 2,
+  },
+  textBody: {
+    fontSize: 14,
+    color: '#475569',
+    lineHeight: 20,
+    marginTop: 4,
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 13,
+    borderRadius: 8,
+    marginVertical: 5,
+    gap: 8,
+  },
+  btnPrimary: {
+    backgroundColor: '#1e3a8a',
+  },
+  btnDark: {
+    backgroundColor: '#334155',
+  },
+  btnPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.99 }],
+  },
+  btnText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
 });
-// Fix menor en estructura de vistas
